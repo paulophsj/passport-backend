@@ -1,0 +1,96 @@
+package com.phsj.passport.config;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.phsj.passport.model.acesso.Perfil;
+import com.phsj.passport.util.security.JwtAuthenticationFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+                                 AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(c -> c.disable())
+                .authorizeHttpRequests(authorize -> authorize
+
+                        .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/produto/").hasAnyAuthority(
+                                Perfil.ROLE_CLIENTE
+                        )
+
+                        // == Usuários ==
+                        .requestMatchers(HttpMethod.POST, "/api/usuario").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/usuario").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+                        .requestMatchers(HttpMethod.PUT, "/api/usuario").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuario").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+
+                        // == Cartões ==
+                        .requestMatchers(HttpMethod.GET, "/api/cartao").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+                        .requestMatchers(HttpMethod.POST, "/api/cartao/**").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+                        .requestMatchers(HttpMethod.PUT, "/api/cartao/**").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+                        .requestMatchers(HttpMethod.DELETE, "/api/cartao/**").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN
+                        )
+
+                )
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+}

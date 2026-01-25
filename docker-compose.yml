@@ -1,0 +1,13 @@
+services:
+  passport:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_DB: passport
+      POSTGRES_PASSWORD: passport
+      POSTGRES_USER: passport
+    ports:
+      - 5436:5432
+    volumes:
+      - ./data/passport:/var/lib/postgresql
+      - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
