@@ -41,19 +41,15 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/produto/").hasAnyAuthority(
-                                Perfil.ROLE_CLIENTE
-                        )
-
                         // == Usuários ==
                         .requestMatchers(HttpMethod.POST, "/api/usuario").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/usuario").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
-                        .requestMatchers(HttpMethod.PUT, "/api/usuario").hasAnyAuthority(
+                        .requestMatchers(HttpMethod.PUT, "/api/usuario/*").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
-                        .requestMatchers(HttpMethod.DELETE, "/api/usuario").hasAnyAuthority(
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuario/*").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
 
@@ -61,13 +57,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/cartao").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
-                        .requestMatchers(HttpMethod.POST, "/api/cartao/**").hasAnyAuthority(
+                        .requestMatchers(HttpMethod.POST, "/api/cartao/*").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
-                        .requestMatchers(HttpMethod.PUT, "/api/cartao/**").hasAnyAuthority(
+                        .requestMatchers(HttpMethod.PUT, "/api/cartao/*").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
-                        .requestMatchers(HttpMethod.DELETE, "/api/cartao/**").hasAnyAuthority(
+                        .requestMatchers(HttpMethod.DELETE, "/api/cartao/*").hasAnyAuthority(
                                 Perfil.ROLE_ADMIN
                         )
 
@@ -84,7 +80,7 @@ public class SecurityConfiguration {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
