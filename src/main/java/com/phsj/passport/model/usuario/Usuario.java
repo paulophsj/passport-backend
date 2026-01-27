@@ -19,13 +19,13 @@ import java.util.List;
 @Table(name = "usuario")
 @SQLRestriction("habilitado = true")
 public class Usuario extends EntidadeAuditavel implements UserDetails {
-    @Column
+    @Column(nullable = false)
     private String nome;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = false)
     @JsonIgnore
     private String senha;
 
