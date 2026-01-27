@@ -27,12 +27,15 @@ public class UsuarioController {
     }
     @PostMapping
     public ResponseEntity<Usuario> criarUsuario(@RequestBody @Valid CriarUsuarioDTO usuario, HttpServletRequest request){
+        if(!usuario.getConfirmarSenha().equals(usuario.getSenha())){
+            throw new RuntimeException("As senhas não coincidem.");
+        }
         Usuario novoUsuario = usuarioService.criarUsuario(usuario.build(), request);
         return new ResponseEntity<Usuario>(novoUsuario, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> alterarUsuario(@RequestBody @Valid AlterarUsuarioDTO usuario, @PathVariable("id") Long id){
-        Usuario usuarioAlterado = usuarioService.alterarUsuario(id, usuario.build());
+        Usuario usuarioAlterado = usuarioService.alterarUsuario(id, usuario.build(), usuario.getRole());
         return new ResponseEntity<Usuario>(usuarioAlterado, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
