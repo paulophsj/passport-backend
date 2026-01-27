@@ -20,6 +20,10 @@ public class CriarUsuarioDTO {
     @Length(min = 6, message = "O campo senha deve ter no mínimo {min} caracteres.")
     private String senha;
 
+    @NotBlank(message = "O campo confirmarSenha é de preenchimento obrigatório.")
+    @Length(min = 6, message = "O campo confirmarSenha deve ter no mínimo {min} caracteres.")
+    private String confirmarSenha;
+
     public CriarUsuarioDTO() {}
 
     public String getNome() { return nome; }
@@ -30,6 +34,14 @@ public class CriarUsuarioDTO {
 
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getConfirmarSenha() {
+        return confirmarSenha;
+    }
+
+    public void setConfirmarSenha(String confirmarSenha) {
+        this.confirmarSenha = confirmarSenha;
+    }
 
     public Usuario build(){
         return new Usuario()
