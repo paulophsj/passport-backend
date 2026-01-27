@@ -1,5 +1,6 @@
 package com.phsj.passport.model.cartao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.phsj.passport.model.usuario.Usuario;
 import com.phsj.passport.util.entity.EntidadeAuditavel;
 import com.phsj.passport.util.enums.TiposCartao;
@@ -10,19 +11,25 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "cartao")
 @SQLRestriction("habilitado = true")
 public class Cartao extends EntidadeAuditavel {
-    @Column
+    @Column(unique = true, nullable = false)
     private Integer numeroCartao;
 
-    @Column
+    @Column(nullable = false)
     private String nome;
 
-    @Column
+    @Column(nullable = false)
     private Boolean status;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @Column
+    @JsonProperty("usuarioId")
+    public Long getUsuarioId() {
+        return usuario != null ? usuario.getId() : null;
+    }
+
+    @Column(nullable = false)
     private TiposCartao tipoCartao;
 
     public Cartao(){}

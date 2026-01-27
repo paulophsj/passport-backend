@@ -2,6 +2,7 @@ package com.phsj.passport.model.cartao;
 
 import com.phsj.passport.model.usuario.Usuario;
 import com.phsj.passport.model.usuario.UsuarioRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,13 @@ public class CartaoService {
     @Transactional
     public Cartao criarCartao(Long usuario_id, Cartao cartao) {
         Usuario usuarioExistente = usuarioRepository.findById(usuario_id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+
+        boolean existsCartao = this.cartaoRepository.existsByNumeroCartao(cartao.getNumeroCartao());
+
+        if(existsCartao){
+            throw new EntityExistsException("Já existe um número de cartão vinculado.");
+        }
+
         cartao.setUsuario(usuarioExistente);
         cartao.setHabilitado(Boolean.TRUE);
         return cartaoRepository.save(cartao);
