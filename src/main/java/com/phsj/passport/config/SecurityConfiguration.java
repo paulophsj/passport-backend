@@ -40,6 +40,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
 
                         .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
 
                         // == Usuários ==
                         .requestMatchers(HttpMethod.POST, "/api/usuario").permitAll()
