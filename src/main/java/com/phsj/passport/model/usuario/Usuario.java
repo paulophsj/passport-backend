@@ -35,6 +35,11 @@ public class Usuario extends EntidadeAuditavel implements UserDetails {
 
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "usuario_roles",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "roles_id")
+    )
     private List<Perfil> roles = new ArrayList<>();
 
     public Usuario(){}
