@@ -3,11 +3,11 @@ package com.phsj.passport.api.acesso;
 import com.phsj.passport.model.usuario.Usuario;
 import com.phsj.passport.model.usuario.UsuarioService;
 import com.phsj.passport.util.security.JwtService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,5 +42,31 @@ public class AuthenticationController {
         loginResponse.put("tokenExpiresIn", jwtService.getExpirationTime());
 
         return loginResponse;
+    }
+
+    @GetMapping
+    public ResponseEntity<Usuario> check(HttpServletRequest request){
+        Usuario usuarioLogado = usuarioService.obterUsuarioLogado(request);
+        return new ResponseEntity<Usuario>(usuarioLogado, HttpStatus.OK);
+    }
+
+    @GetMapping("/check-token")
+    public Map<Object, Object> checkToken(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        Map<Object, Object> checkAuthResponse = new HashMap<>();
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String jwt = authHeader.substring(7);
+            String userEmail = jwtService.extractUsername(jwt);
+            UserDetails userDetails = usuarioService.loadUserByUsername(userEmail);
+
+            boolean isValid = jwtService.isTokenValid(jwt, userDetails);
+
+            checkAuthResponse.put("isValid", isValid ? true : false);
+            return checkAuthResponse;
+        }
+
+        checkAuthResponse.put("isValid", "Credenciais inválidas.");
+        return checkAuthResponse;
     }
 }

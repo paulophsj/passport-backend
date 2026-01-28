@@ -73,6 +73,11 @@ public class SecurityConfiguration {
                                 Perfil.ROLE_ADMIN
                         )
 
+                        .requestMatchers(HttpMethod.GET, "/api/auth", "/api/auth/check-token").hasAnyAuthority(
+                                Perfil.ROLE_ADMIN,
+                                Perfil.ROLE_CLIENTE
+                        )
+
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
