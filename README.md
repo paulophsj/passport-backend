@@ -173,6 +173,8 @@ Você pode rodar de duas formas:
 #### ▶️ Via Maven
 
 ```bash
+mvn clean install
+
 mvn spring-boot:run
 ```
 
