@@ -1,10 +1,10 @@
 # 🛂 Passport - Sistema de Gerenciamento de Transportes
 
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-![Swagger](https://img.shields.io/badge/-Swagger-%23C0E317?style=for-the-badge&logo=swagger&logoColor=black)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge\&logo=spring-boot\&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge\&logo=docker\&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge\&logo=postgresql\&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge\&logo=JSON%20web%20tokens)
+![Swagger](https://img.shields.io/badge/-Swagger-%23C0E317?style=for-the-badge\&logo=swagger\&logoColor=black)
 
 > Sistema de gerenciamento de usuários e cartões de transporte, desenvolvido com **Spring Boot**, focado em segurança, organização e boas práticas.
 
@@ -172,9 +172,28 @@ Você pode rodar de duas formas:
 
 #### ▶️ Via Maven
 
+> ⚠️ **Configuração inicial obrigatória:**
+>
+> Antes de iniciar o servidor **pela primeira vez**, configure no arquivo `application.properties`:
+>
+> ```properties
+> spring.sql.init.mode=never
+> ```
+>
+> Esse passo é necessário para garantir a criação correta das tabelas no banco de dados.
+
 ```bash
 mvn clean install
+```
 
+> Após o build, altere o valor no `application.properties` para:
+>
+> ```properties
+> spring.sql.init.mode=always
+> ```
+
+```bash
+mvn clean install
 mvn spring-boot:run
 ```
 
